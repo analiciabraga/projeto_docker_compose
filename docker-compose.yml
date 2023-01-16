@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  psql_projeto_final:
+    image: postgres:15-alpine
+    environment:
+      - ./env.dev.psql
+    ports:
+      - "5432:5432"
+    networks:
+      - rede_ada_projeto_final
+    volumes:
+      - ${pwd}/psql_start:/docker-entrypoint-initdb.d
+    restart: always
+  app_projeto_final:1:
+    build:
+      dockerfile: build/Dockerfile-app
+    ports:
+      - "8080:5000"
+    env_file:
+      - ./env.dev
+    networks:
+      - rede_ada_projeto_final
+    volumes:
+      - ./src:/app
+
+  networks:
+    rede_ada_projeto_final:
