@@ -13,10 +13,16 @@ services:
       - rede_ada_projeto_final
     volumes:
       - ./psql_start:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   app_projeto_final:
     depends_on:
-      - psql_projeto_final
+      psql_projeto_final:
+        condition: service_healthy
     build:
       dockerfile: build/Dockerfile.app
     ports:
